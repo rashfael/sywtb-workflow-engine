@@ -21,6 +21,9 @@
 		"noErrorTruncation": true,
 		"noImplicitThis": true,
 		"isolatedModules": true,
-		"types": ["node", "events", "vite/client"]
+		"types": ["node", "events", "vite/client", "@vue-macros/reactivity-transform/macros-global"]
+	},
+	"vueCompilerOptions": {
+		"plugins": ["@vue/language-plugin-pug"]
 	}
 }

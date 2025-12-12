@@ -1,0 +1,6 @@
+# config for local development ONLY
+# squeezes out performance on a single machine to approximate a prod cluster
+default-num-partitions = 128
+
+[bifrost.local]
+rocksdb-disable-wal-fsync = true

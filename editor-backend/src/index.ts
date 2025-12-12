@@ -15,10 +15,12 @@ console.log(`Editor Backend running on http://localhost:${port}`)
 
 // graceful shutdown
 process.on('SIGINT', () => {
+	console.log('SIGINT')
 	server.close()
 	process.exit(0)
 })
 process.on('SIGTERM', () => {
+	console.log('SIGTERM')
 	server.close((err) => {
 		if (err) {
 			console.error(err)

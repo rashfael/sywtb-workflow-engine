@@ -11,15 +11,19 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nx run-many --target=dev --exclude=sywtb-workflow-engine",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "docs:deploy": "npm run docs:build && rsync -avz --delete docs/.vitepress/dist/ rash.codes:docs-sywtb-workflow-engine",
-    "lint:eslint": "eslint . --ext .ts,.tsx,.vue"
+    "lint:eslint": "eslint . --ext .ts,.tsx,.vue",
+    "mongodb": "docker compose up mongodb",
+    "restate-server": "npx @restatedev/restate-server --config-file restate.toml"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@restatedev/restate": "^1.5.6",
+    "@restatedev/restate-server": "^1.5.6",
     "@stylistic/eslint-plugin": "^5.6.1",
     "@types/node": "^25.0.1",
     "@vue/eslint-config-typescript": "^14.6.0",

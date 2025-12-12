@@ -16,6 +16,6 @@
 		"noErrorTruncation": true,
 		"noImplicitThis": true,
 		"isolatedModules": true,
-		"types": ["node", "events", "vite/client", "@vue-macros/reactivity-transform/macros-global"]
+		"types": ["node", "events"]
 	}
 }

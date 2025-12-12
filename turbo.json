@@ -1,0 +1,19 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "dev": {
+      "dependsOn": ["^dev"],
+      "persistent": true,
+      "cache": false
+    },
+    "//#mongodb": {
+      "persistent": true,
+      "cache": false
+    },
+    "//#restate-server": {
+      "persistent": true,
+      "cache": false
+    }
+  }
+}
