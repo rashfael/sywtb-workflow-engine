@@ -1,0 +1,21 @@
+{
+	"include": ["src/**/*", "src/**/*.vue", "common/**/*", "definitions/**/*", "tests/**/*"],
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"common/*": ["./common/*"],
+			"types/*": ["./types/*"],
+		},
+		"strict": false,
+		"allowJs": true,
+		"checkJs": true,
+		"target": "esnext",
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
+		"noErrorTruncation": true,
+		"noImplicitThis": true,
+		"isolatedModules": true,
+		"types": ["node", "events", "vite/client", "@vue-macros/reactivity-transform/macros-global"]
+	}
+}
