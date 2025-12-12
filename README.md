@@ -5,8 +5,13 @@ Head over to the [doc book](https://docs.sywtb-workflow-engine.rash.codes) to st
 
 ## Writing / Deploying Docs
 
-```bash
+```sh
 npm run docs:dev
 npm run docs:build
 npm run docs:deploy
+```
+## Running the dev env
+
+``sh
+npm run dev
 ```
