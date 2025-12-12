@@ -1,0 +1,45 @@
+@layer typography, buntpapier
+	
+:root
+
+	// TODO redo colors
+	--clr-primary: #9c27b0
+	--clr-accent: #ab47bc
+	--clr-body-text: #9c27b0
+	--clr-background: var(--clr-white)
+	--clr-background-hover: var(--clr-grey-200)
+	--clr-background-selected: var(--clr-grey-100)
+	--border-separator: 1px solid rgba(0, 0, 0, 0.12)
+	color-scheme: light
+
+html, body, #app
+	margin: 0
+	height: 100%
+	overflow: hidden
+
+#app
+	display: flex
+	flex-direction: column
+
+body
+	font-family: Roboto
+	font-size: 16px
+	color: var(--clr-primary-text-light)
+
+@layer typography
+	a
+		color: var(--clr-body-text)
+		text-decoration: none
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus,
+input:-internal-autofill-previewed,
+:autofill
+	font-family: Roboto
