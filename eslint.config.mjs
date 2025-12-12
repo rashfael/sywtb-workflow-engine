@@ -8,7 +8,8 @@ import vuePug from 'eslint-plugin-vue-pug'
 
 const ignores = globalIgnores([
 	'**/node_modules',
-	'**/dist'
+	'**/dist',
+	'**/.vitepress/cache'
 ])
 
 export default defineConfig([

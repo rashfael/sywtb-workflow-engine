@@ -1,0 +1,25 @@
+{
+	"eslint.validate": [
+		"javascript",
+		"typescript",
+		"html",
+		"vue"
+	],
+	"stylelint.validate": [
+		"css",
+		"less",
+		"postcss",
+		"vue",
+		"stylus"
+	],
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit",
+		"source.fixAll.stylelint": "explicit"
+	},
+	"eslint.codeActionsOnSave.rules": [
+		"!prefer-const",
+		"!unused-imports/no-unused-imports",
+		"*"
+	]
+}
+

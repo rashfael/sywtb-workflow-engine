@@ -15,7 +15,8 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "docs:deploy": "npm run docs:build && rsync -avz --delete docs/.vitepress/dist/ rash.codes:docs-sywtb-workflow-engine"
+    "docs:deploy": "npm run docs:build && rsync -avz --delete docs/.vitepress/dist/ rash.codes:docs-sywtb-workflow-engine",
+    "lint:eslint": "eslint . --ext .ts,.tsx,.vue"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -23,8 +24,8 @@
     "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/language-plugin-pug": "^3.1.8",
     "eslint": "^9.39.1",
-    "eslint-plugin-vue": "^9.33.0",
-    "eslint-plugin-vue-pug": "^0.6.2",
+    "eslint-plugin-vue": "^10.6.2",
+    "eslint-plugin-vue-pug": "^1.0.0-alpha.4",
     "globals": "^16.5.0",
     "typescript-eslint": "^8.49.0",
     "vitepress": "^2.0.0-alpha.15"
