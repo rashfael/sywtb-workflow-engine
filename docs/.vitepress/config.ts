@@ -14,7 +14,8 @@ export default defineConfig({
       {
         text: 'Chapter 0',
         items: [
-          { text: 'Intro', link: '/chapter-0/0-intro' }
+          { text: 'Intro', link: '/chapter-0/0-intro' },
+          { text: 'Setup', link: '/chapter-0/1-setup' }
         ]
       }
     ],

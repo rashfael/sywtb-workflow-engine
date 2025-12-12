@@ -15,10 +15,10 @@ hero:
       link: https://github.com/rashfael/sywtb-workflow-engine
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  # - title: Feature A
+  #   details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Like What You See?
+    details: "Get in touch with me and we can build something together:<br><a href=\"https://rash.codes\">rash.codes</a>"
   - title: WIP WIP WIP
     details: "This project isn't done yet, stay updated by following me on the fediverse: <a href=\"https://chaos.social/@rash\">@rash@chaos.social</a>"
 ---

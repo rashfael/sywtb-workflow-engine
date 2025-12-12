@@ -15,7 +15,7 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "docs:deploy": "npx run docs:build && rsync -avz --delete docs/.vitepress/dist/ rash.codes:docs-sywtb-workflow-engine"
+    "docs:deploy": "npm run docs:build && rsync -avz --delete docs/.vitepress/dist/ rash.codes:docs-sywtb-workflow-engine"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
