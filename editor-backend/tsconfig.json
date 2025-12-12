@@ -1,0 +1,29 @@
+{
+	"include": ["src/**/*", "tests/**/*"],
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"~/*": [
+				"./src/*"
+			],
+			"types/*": ["../types/*"],
+			"common/*": ["../../common/*"],
+			"definitions/*": ["../../definitions/*"],
+			
+		},
+		"strict": false,
+		"allowJs": true,
+		"checkJs": true,
+		"target": "esnext",
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
+		"noErrorTruncation": true,
+		"noImplicitThis": true,
+		"isolatedModules": true,
+		"types": ["node", "events", "vite/client", "@vue-macros/reactivity-transform/macros-global"]
+	},
+	"vueCompilerOptions": {
+		"plugins": ["@vue/language-plugin-pug"]
+	}
+}

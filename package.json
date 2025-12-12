@@ -21,12 +21,14 @@
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@stylistic/eslint-plugin": "^5.6.1",
+    "@types/node": "^25.0.1",
     "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/language-plugin-pug": "^3.1.8",
     "eslint": "^9.39.1",
     "eslint-plugin-vue": "^10.6.2",
     "eslint-plugin-vue-pug": "^1.0.0-alpha.4",
     "globals": "^16.5.0",
+    "tsx": "^4.21.0",
     "typescript-eslint": "^8.49.0",
     "vitepress": "^2.0.0-alpha.15"
   },
