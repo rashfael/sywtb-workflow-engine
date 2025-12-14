@@ -10,8 +10,16 @@ npm run docs:dev
 npm run docs:build
 npm run docs:deploy
 ```
+
+
+## Requirements
+
+- latest Node.js (v25+)
+- latest Docker
+
 ## Running the dev env
 
-``sh
+```sh
+npm ci
 npm run dev
 ```
