@@ -11,7 +11,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "dev": "nx run-many --target=dev --exclude=sywtb-workflow-engine",
+    "dev": "turbo run dev",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
@@ -33,6 +33,7 @@
     "eslint-plugin-vue-pug": "^1.0.0-alpha.4",
     "globals": "^16.5.0",
     "tsx": "^4.21.0",
+    "turbo": "^2.6.3",
     "typescript-eslint": "^8.49.0",
     "vitepress": "^2.0.0-alpha.15"
   },
@@ -41,5 +42,6 @@
     "editor-backend",
     "execution-backend",
     "runtime"
-  ]
+  ],
+  "packageManager": "npm@11.6.2"
 }
