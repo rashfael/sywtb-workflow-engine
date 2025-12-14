@@ -2,7 +2,6 @@ import crypto from 'node:crypto'
 import { promisify } from 'node:util'
 import { Hono } from 'hono'
 import { sign, jwt } from 'hono/jwt'
-import { createMiddleware } from 'hono/factory'
 
 import { mongodb } from '~/mongodb'
 
@@ -41,7 +40,7 @@ export const authMiddleware = jwt({
 	secret: SECRET_KEY
 })
 
-app.get('/me', authMiddleware, async ({ req, json, var: { jwtPayload } }) => {
+app.get('/me', authMiddleware, async ({ json, var: { jwtPayload } }) => {
 	return json(jwtPayload)
 })
 
