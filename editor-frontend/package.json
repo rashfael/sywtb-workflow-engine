@@ -25,6 +25,7 @@
     "@vueuse/core": "^14.1.0",
     "@vueuse/router": "^14.1.0",
     "buntpapier": "^3.0.0-alpha.17",
+    "ky": "^1.14.1",
     "vue": "^3.5.25",
     "vue-router": "^4.6.4"
   }

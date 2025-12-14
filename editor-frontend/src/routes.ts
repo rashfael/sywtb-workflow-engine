@@ -2,5 +2,11 @@
 
 export default [{
 	path: '/',
-	component: () => import('~/App.vue')
+	component: () => import('~/App.vue'),
+	meta: {
+		requiresAuth: true
+	}
+}, {
+	path: '/login',
+	component: () => import('~/views/login.vue')
 }]

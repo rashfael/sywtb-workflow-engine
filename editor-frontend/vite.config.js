@@ -38,6 +38,7 @@ export default defineConfig(async ({ mode }) => {
 			alias: [
 				{ find: 'lodash', replacement: 'lodash-es' },
 				{ find: '~', replacement: path.resolve(__dirname, './src') },
+				{ find: 'config', replacement: path.resolve(__dirname, './config.ts') },
 				{ find: 'common', replacement: path.resolve(__dirname, '../common') },
 				{ find: 'runtime', replacement: path.resolve(__dirname, '../runtime') },
 				{ find: 'definitions', replacement: path.resolve(__dirname, '../definitions') },
