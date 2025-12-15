@@ -1,15 +1,15 @@
 <script setup>
-import authApi from '~/api/auth'
-
-let user = $ref(null)
+import globalStore, { initGlobalStore } from '~/store/global'
 
 ;(async function () {
-	user = await authApi.get('me').json()
+	initGlobalStore()
+	await globalStore.fetchUser()
+	await globalStore.fetchWorkflows()
 })()
 </script>
 <template lang="pug">
-h1 Hi {{ user.sub }}!
-h2 Welcome to the SYWTB Workflow Engine Editor
+router-view(v-if="globalStore.workflows")
+bunt-progress-circular(v-else)
 </template>
 <style lang="sass">
 </style>

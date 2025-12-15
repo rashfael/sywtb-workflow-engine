@@ -7,7 +7,14 @@ type User = {
 	passwordHash: string
 }
 
+type Workflow = {
+	_id: string,
+	label: string,
+	owner: string
+}
+
 export const mongodb = {
 	...db,
-	users: db.collection<User>('users')
+	users: db.collection<User>('users'),
+	workflows: db.collection<Workflow>('workflows')
 }
