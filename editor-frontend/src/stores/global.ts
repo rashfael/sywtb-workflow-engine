@@ -7,7 +7,7 @@ export { store as default }
 
 export function initGlobalStore () {
 	const api = createWorkflowsApi()
-	store = createStore('workflows', {
+	store = createStore('global', {
 		state () {
 			return {
 				user: null,
