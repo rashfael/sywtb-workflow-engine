@@ -1,20 +1,16 @@
-import { Hono } from 'hono'
 import { serve } from '@hono/node-server'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
 
 import { showRoutes } from 'hono/dev'
 
-import authApp from './auth.js'
-import workflowsApp from './workflows.js'
-
-// we need to be non-strict for subapp / to route for some reason, investigate later
-const app = new Hono({ strict: false })
+import app from './app'
+import { injectWebSocket } from './baseWebSocketApp'
+import authApp from './auth'
+import workflowsApp from './workflows'
 
 app.use('*', cors())
 app.use(logger())
-
-app.get('/', (c) => c.text('Hono!'))
 
 app.route('/auth', authApp)
 app.route('/workflows', workflowsApp)
@@ -24,6 +20,7 @@ const server = serve({
 	fetch: app.fetch,
 	port
 })
+injectWebSocket(server)
 
 console.log(`Editor Backend running on http://localhost:${port}`)
 showRoutes(app, {

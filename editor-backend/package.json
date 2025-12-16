@@ -13,7 +13,10 @@
   "type": "module",
   "dependencies": {
     "@hono/node-server": "^1.19.7",
+    "@hono/node-ws": "^1.2.0",
+    "cbor-x": "^1.6.0",
     "hono": "^4.10.8",
+    "loro-crdt": "^1.10.3",
     "mongodb": "^7.0.0"
   }
 }

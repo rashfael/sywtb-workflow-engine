@@ -7,7 +7,12 @@ import { mongodb } from '~/mongodb'
 
 const app = new Hono()
 
-const SECRET_KEY = process.env.JWT_SECRET || 'totally random secret key do not steal'
+export const JWT_SECRET = process.env.JWT_SECRET || 'totally random secret key do not steal'
+
+export interface JWTPayload {
+	sub: string
+	exp: number
+}
 
 app.post('/login', async ({ req, json }) => {
 	const { email, password } = await req.json()
@@ -32,12 +37,12 @@ app.post('/login', async ({ req, json }) => {
 		token: await sign({
 			sub: email,
 			exp: Math.floor(Date.now() / 1000) + 60 * 60 * 12 // 12 hour expiration
-		}, SECRET_KEY)
+		}, JWT_SECRET)
 	})
 })
 
 export const authMiddleware = jwt({
-	secret: SECRET_KEY
+	secret: JWT_SECRET
 })
 
 app.get('/me', authMiddleware, async ({ json, var: { jwtPayload } }) => {
