@@ -1,7 +1,6 @@
 import ky from 'ky'
 import config from 'config'
 import { token } from './auth.js'
-import { _ } from 'vue-router/dist/router-CWoNjPRp.mjs'
 
 export function createWorkflowsApi () {
 	// TODO less copypasta?
