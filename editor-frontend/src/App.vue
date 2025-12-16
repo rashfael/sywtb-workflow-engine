@@ -1,5 +1,5 @@
 <script setup>
-import globalStore, { initGlobalStore } from '~/store/global'
+import globalStore, { initGlobalStore } from '~/stores/global'
 
 ;(async function () {
 	initGlobalStore()

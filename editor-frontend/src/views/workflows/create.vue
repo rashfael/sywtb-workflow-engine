@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { watchEffect } from 'vue'
 import router from '~/router'
-import globalStore from '~/store/global'
+import globalStore from '~/stores/global'
 let label = $ref('')
 let id = $ref('')
 

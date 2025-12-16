@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import globalStore from '~/store/global'
+import globalStore from '~/stores/global'
 </script>
 <template lang="pug">
 .v-root
