@@ -2,6 +2,7 @@ import path from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import ReactivityTransform from '@vue-macros/reactivity-transform/vite'
+import wasm from 'vite-plugin-wasm'
 
 export default defineConfig(async ({ mode }) => {
 	const config = {
@@ -22,7 +23,8 @@ export default defineConfig(async ({ mode }) => {
 					}
 				}
 			}),
-			ReactivityTransform()
+			ReactivityTransform(),
+			wasm()
 		],
 		build: {
 			target: 'esnext',
