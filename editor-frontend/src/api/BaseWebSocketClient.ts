@@ -25,7 +25,7 @@ export default class BaseWebsocketClient extends EventEmitter {
 		this.#socket.send(encode([action, args]))
 	}
 
-	call (action: string, args: any): Promise<any> {
+	call (action: string, args?: any): Promise<any> {
 		const { id, promise } = this.#createRequest()
 		this.#socket.send(encode([action, id, args]))
 		return promise
@@ -39,7 +39,7 @@ export default class BaseWebsocketClient extends EventEmitter {
 			console.log('WebSocket connected to', this.#url)
 			this.emit('open')
 			await this.call('auth', { token: this.#token })
-
+			this.emit('authenticated')
 			// start pinging
 			this.send('ping', Date.now())
 		})

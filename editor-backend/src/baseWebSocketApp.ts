@@ -6,31 +6,48 @@
  *
  * @example
  * ```typescript
- * const app = createWebSocketApp('/ws', (ctx) => {
- *   let userId: string
+ * const app = createWebSocketApp('/ws/:docId', async (room) => {
+ *   // Setup room-level state here
+ *   const docState = new Map()
  *
  *   return {
- *     onAuth: (payload) => {
- *       userId = payload.sub
+ *     async roomTeardown() {
+ *       // Cleanup room when last client disconnects
+ *       docState.clear()
  *     },
- *     onClose: () => {
- *       console.log(`User ${userId} disconnected`)
- *     },
- *     actions: {
- *       async saveDocument(content: string) {
- *         await db.save(content)
- *         ctx.publish('documentUpdated', content) // notify others
- *         return { saved: true }
+ *     async onClientConnect(client) {
+ *       let userId: string
+ *
+ *       return {
+ *         onAuth: (payload) => {
+ *           userId = payload.sub
+ *         },
+ *         onClose: () => {
+ *           console.log(`User ${userId} disconnected`)
+ *         },
+ *         actions: {
+ *           async saveDocument(content: string) {
+ *             await db.save(content)
+ *             client.broadcastOthers('documentUpdated', content) // notify others
+ *             return { saved: true }
+ *           },
+ *           async notifyAll(message: string) {
+ *             room.broadcast('notification', message) // notify all including self
+ *           }
+ *         }
  *       }
  *     }
  *   }
  * })
  * ```
  *
- * Context utilities (available on ctx):
- * - `ctx.send(action, ...args)` - Send to this client
- * - `ctx.publish(action, ...args)` - Send to all clients except this one
- * - `ctx.broadcast(action, ...args)` - Send to all clients including this one
+ * Room context (available on room):
+ * - `room.broadcast(action, ...args)` - Send to all clients including sender
+ *
+ * Client context (available on client):
+ * - `client.req` - The original Hono request
+ * - `client.send(action, ...args)` - Send to this client only
+ * - `client.broadcastOthers(action, ...args)` - Send to all clients except this one
  */
 
 import { createNodeWebSocket } from '@hono/node-ws'
@@ -44,21 +61,35 @@ import { JWT_SECRET, type JWTPayload } from '~/auth'
 
 export type SendFn = (action: string, ...args: unknown[]) => void
 
-export interface WebSocketCtx {
-	req: HonoRequest,
-	/** Send to this client */
-	send: SendFn,
+export interface RoomCtx {
+	/** Room url */
+	url: string
+	/** Path params */
+	params: Record<string, string>
+	/** Send to all clients including sender */
+	broadcast: SendFn
+}
+
+export interface ClientCtx {
+	req: HonoRequest
+	/** Send to this client only */
+	send: SendFn
 	/** Send to all clients except this one */
-	publish: SendFn,
-	/** Send to all clients including this one */
-	broadcast: SendFn,
+	broadcastOthers: SendFn
 }
 
 export type ActionHandler = (
 	...args: unknown[]
 ) => Promise<unknown> | unknown
 
-export interface WebSocketAppHooks {
+export interface RoomHooks {
+	/** Called when last client disconnects from the room */
+	roomTeardown?: () => Promise<void> | void
+	/** Called when a new client connects, return client hooks */
+	onClientConnect: (client: ClientCtx) => Promise<ClientHooks> | ClientHooks
+}
+
+export interface ClientHooks {
 	/** Called before authentication is processed */
 	onBeforeAuth?: (token: string) => Promise<void> | void
 	/** Called to authorize the connection after JWT verification, receives the JWT payload. Throw to reject */
@@ -75,8 +106,8 @@ export interface WebSocketAppHooks {
 
 export interface WebSocketClient {
 	socket: WSContext
-	ctx: WebSocketCtx
-	hooks: WebSocketAppHooks
+	ctx: ClientCtx
+	hooks: ClientHooks
 }
 
 // injecting just once with the root app seems to work fine
@@ -85,16 +116,46 @@ export { injectWebSocket }
 
 export function createWebSocketApp (
 	path: string,
-	createHooks: (ctx: WebSocketCtx) => WebSocketAppHooks
+	createRoom: (room: RoomCtx) => Promise<RoomHooks> | RoomHooks
 ) {
 	const app = new Hono()
 
-	const clients = new Map<WSContext, WebSocketClient>()
-	console.log(upgradeWebSocket)
+	// Map of URL path -> room state
+	const rooms = new Map<string, {
+		clients: Map<WSContext, WebSocketClient>
+		hooks: RoomHooks
+		ctx: RoomCtx
+	}>()
+
+	async function getOrCreateRoom (req: HonoRequest) {
+		const url = req.url
+		let room = rooms.get(url)
+		if (!room) {
+			const clients = new Map<WSContext, WebSocketClient>()
+			const ctx: RoomCtx = {
+				url,
+				params: req.param(), // TODO can we type this better?
+				broadcast (action: string, ...args: unknown[]) {
+					for (const client of clients.values()) {
+						client.ctx.send(action, ...args)
+					}
+				}
+			}
+			const hooks = await createRoom(ctx)
+			room = { clients, hooks, ctx }
+			rooms.set(url, room)
+		}
+		return room
+	}
+
 	app.get(
 		path,
 		upgradeWebSocket(({ req }) => {
 			let socket: WSContext
+			const {
+				promise: eventualRoom,
+				resolve: resolveRoom
+			} = Promise.withResolvers<Awaited<ReturnType<typeof getOrCreateRoom>>>()
 
 			function send (...data: unknown[]) {
 				if (socket.readyState !== WebSocket.OPEN) return
@@ -103,46 +164,43 @@ export function createWebSocketApp (
 			}
 
 			return {
-				onOpen (_event, ws) {
+				async onOpen (_event, ws) {
 					socket = ws
+					const room = await getOrCreateRoom(req)
+					resolveRoom(room)
 
 					const clientSend: SendFn = (action: string, ...args: unknown[]) => {
 						send(action, ...args)
 					}
 
-					const publish: SendFn = (action: string, ...args: unknown[]) => {
-						for (const client of clients.values()) {
+					const broadcastOthers: SendFn = (action: string, ...args: unknown[]) => {
+						for (const client of room.clients.values()) {
 							if (client.socket !== socket) {
 								client.ctx.send(action, ...args)
 							}
 						}
 					}
 
-					const broadcast: SendFn = (action: string, ...args: unknown[]) => {
-						for (const client of clients.values()) {
-							client.ctx.send(action, ...args)
-						}
-					}
-
-					const ctx: WebSocketCtx = {
+					const clientCtx: ClientCtx = {
 						req,
 						send: clientSend,
-						publish,
-						broadcast
+						broadcastOthers
 					}
 
-					const hooks = createHooks(ctx)
+					const clientHooks = await room.hooks.onClientConnect(clientCtx)
 
 					const client: WebSocketClient = {
 						socket,
-						ctx,
-						hooks
+						ctx: clientCtx,
+						hooks: clientHooks
 					}
-					clients.set(socket, client)
+					room.clients.set(socket, client)
 				},
 
 				async onMessage (event) {
-					const client = clients.get(socket)
+					// wait for room to be loaded
+					const room = await eventualRoom
+					const client = room.clients.get(socket)
 					if (!client) return
 
 					let data: ArrayBuffer
@@ -196,6 +254,7 @@ export function createWebSocketApp (
 							}
 							default: {
 								// Handle action calls [action, id, args]
+								// TODO handle one-way [action, args] ?
 								const [requestId, ...args] = message as [number, ...unknown[]]
 								const handler = client.hooks.actions?.[action]
 
@@ -226,7 +285,8 @@ export function createWebSocketApp (
 				},
 
 				async onClose (_event) {
-					const client = clients.get(socket)
+					const room = await eventualRoom
+					const client = room.clients.get(socket)
 					if (!client) return
 
 					if (client.hooks.onClose) {
@@ -237,12 +297,23 @@ export function createWebSocketApp (
 						}
 					}
 
-					clients.delete(socket)
+					room.clients.delete(socket)
+
+					// Teardown room when last client disconnects
+					if (room.clients.size === 0 && room.hooks.roomTeardown) {
+						try {
+							await room.hooks.roomTeardown()
+						} catch (error) {
+							console.error('Error in roomTeardown handler:', error)
+						}
+						rooms.delete(req.url)
+					}
 				},
 
 				async onError (event) {
 					console.log('WS ERROR', event)
-					const client = clients.get(socket)
+					const room = await eventualRoom
+					const client = room.clients.get(socket)
 					if (!client) return
 
 					if (client.hooks.onError) {
