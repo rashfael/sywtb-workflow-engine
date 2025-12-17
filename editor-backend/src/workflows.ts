@@ -1,8 +1,25 @@
 import { Hono } from 'hono'
 import { authMiddleware } from '~/auth.js'
 import { mongodb } from '~/mongodb.js'
+import { createWebSocketApp } from './baseWebSocketApp'
+
+const wrapperApp = new Hono()
+
+// this needs to go before auth middleware
+wrapperApp.route('/ws', createWebSocketApp('/:workflowId', (_room) => {
+	return {
+		onClientConnect (client) {
+			return {
+				onAuth (payload) {
+					console.log('WebSocket connection authorized for', payload.sub, client.req.param('workflowId'))
+				}
+			}
+		}
+	}
+}))
 
 const app = new Hono()
+app.route('/', wrapperApp)
 
 app.use(authMiddleware)
 

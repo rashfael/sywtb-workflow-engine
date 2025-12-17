@@ -13,10 +13,7 @@ const workflowStore = createWorkflowStore(workflowId)
 provide('workflowStore', workflowStore)
 provide('loroDoc', workflowStore.doc)
 
-import { createWorkflowsApi } from '~/api/workflows'
-
-const workflowsApi = createWorkflowsApi()
-workflowsApi.workflows.socket(workflowId)
+workflowStore.connect()
 
 const editorOptions = {
 	language: 'typescript',
