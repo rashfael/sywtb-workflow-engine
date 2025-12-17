@@ -1,6 +1,6 @@
 # Collaborative Editing
 
-I want to avoid "save" buttons as much as possible and allow multiple users to edit the same workflow at the same time. To do this, I am going to use Conflict-free Replicated Data Types (CRDTs) via the [Loro](https://loro.dev/) library. Loro has just released their own websocket client/server implementation which I *won't* be using here, since I want to use websockets for other stuff in the future, integrate vue reactivity deeply, and rather share a common implementation between everything. Since Loro operates on binary data, I'm going to use CBOR as the serialization format and build a simple rpc protocol on top of it to send/receive updates.
+I want to avoid "save" buttons as much as possible and allow multiple users to edit the same workflow at the same time. To do this, I am going to use Conflict-free Replicated Data Types (CRDTs) via the [Loro](https://loro.dev/) library. Loro has just released their own websocket client/server implementation which I *won't* be using here, since I want to use websockets for other stuff in the future, integrate vue reactivity deeply, and rather share a common implementation between everything. Since Loro operates on binary data, I'm going to use [CBOR](https://github.com/kriszyp/cbor-x) as the serialization format and build a simple rpc protocol on top of it to send/receive updates.
 
 ## A Quick Word on CRDTs
 
@@ -13,7 +13,7 @@ The server we are building does not hold any special authority as far as CRDTs/L
 
 Using CRDTs with Loro is super simple, with a couple of things that you need to be aware of:
 
-- you always start with a new empty LoroDoc and then sync into it ([more on syncronization in the docs](https://loro.dev/docs/api/js#synchronization))
+- you always start with a new empty LoroDoc and then sync into it ([more on syncronization in their docs](https://loro.dev/docs/api/js#synchronization))
 - Loro wants peerIds, which **need** to be unique per process/client. That means every browser tab needs its own peerId. It's best to just let Loro autogenerate a peerId (which is just random) instead of trying to cleverly reuse peerIds. Changes are linked to peerIds, so we will need to track peerId-user mappings if we want to show who made which change later on.
 
 I'm going start in the frontend and add a store that gets instantiated when the app routes to a workflow and holds the LoroDoc for the workflow. We're going to need multiple workflow stores open at the same time in the future for things like versioning, diffing and such, so I want to avoid global stores from here on out.
@@ -26,13 +26,13 @@ provide('workflowStore', workflowStore)
 
 ## Code Editor
 
-For our first "oops all code" editor, I'm adding [Monaco](https://microsoft.github.io/monaco-editor/) as the code editor and build a component that takes a LoroText and keeps the internal monaco model in sync with it.
+For our first "oops all code" editor, I'm adding [Monaco](https://microsoft.github.io/monaco-editor/) as the code editor of choice and build a component that takes a LoroText and keeps the internal Monaco model in sync with it.
 
-LoroText provides a `subscribe` method and monaco gives us `onDidChangeModelContent` to listen for changes. We need to add a reentrancy guard though, or updates will just loop indefinitely between the two.
+LoroText provides a `subscribe` method and monaco gives us `onDidChangeModelContent` to listen for changes and lets us update the respective other side. We need to add a reentrancy guard though, or updates will just loop indefinitely between the two.
 
 *[See the code for loro and monaco in the frontend.](https://github.com/rashfael/sywtb-workflow-engine/commit/c96521bbfa27558b0e0be65bf55d1f9e2b418e84)*
 
-With this we already have a code editor backed by a CRDT.
+With this we already have a code editor backed by a CRDT!
 
 Locally, that is. To actually persist the code and share it between clients, we need a server and talk to it via websockets.
 
@@ -87,7 +87,7 @@ createWebSocketApp('/some-path/:withDynamicPart', (room) => {
 })
 ```
 
-Just as I started to use the base websocket app with loro I noticed that I need room support, so I [added that real quick](https://github.com/rashfael/sywtb-workflow-engine/commit/1ede1ff08da7578aea0ea30c45c7ae19a1e73912)
+Just as I started to use the base websocket app with loro I noticed that I need room support, so I [added that real quick](https://github.com/rashfael/sywtb-workflow-engine/commit/1ede1ff08da7578aea0ea30c45c7ae19a1e73912).
 
 
 ## Syncing Loro over Websockets
@@ -111,7 +111,9 @@ doc.import(await this.call('getSnapshot'))
 doc.import(update)
 ```
 
-The server is a bit more involved, since it needs to track multiple clients and do periodic saving and avoiding race conditions. See the [full code for details](https://github.com/rashfael/sywtb-workflow-engine/commit/38b35256a9efa7c61ee85b31872a3016d55201e5)
+The server is a bit more involved, since it needs to track multiple clients and do periodic saving and avoiding race conditions. See the [full code for details](https://github.com/rashfael/sywtb-workflow-engine/commit/38b35256a9efa7c61ee85b31872a3016d55201e5)-
+
+<video src="./1-multiplayer.webm" autoplay nocontrols></video>
 
 ::: warning No Papers, please!
 
@@ -119,5 +121,4 @@ I'm going to be lazy here and skip authorization for websockets for now, meaning
 
 :::
 
-<video src="./1-multiplayer.webm" autoplay nocontrols></video>
 
