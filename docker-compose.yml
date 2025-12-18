@@ -10,5 +10,19 @@ services:
       - mongodb-data:/data/db
     restart: unless-stopped
 
+  postgres:
+    image: postgres:16-alpine
+    container_name: sywtb-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: sywtb_workflow_engine_development
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
 volumes:
   mongodb-data:
+  postgres-data:

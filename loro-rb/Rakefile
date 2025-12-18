@@ -1,0 +1,79 @@
+# frozen_string_literal: true
+
+require "fileutils"
+require "rbconfig"
+
+desc "Build the native extension"
+task :build do
+  sh "cargo build --release"
+
+  # Determine the library extension based on platform
+  lib_ext = case RbConfig::CONFIG["host_os"]
+            when /darwin/
+              "dylib"
+            when /mswin|mingw/
+              "dll"
+            else
+              "so"
+            end
+
+  source = "target/release/libloro.#{lib_ext}"
+
+  # Ruby expects different extensions
+  target_ext = case RbConfig::CONFIG["host_os"]
+               when /darwin/
+                 "bundle"
+               else
+                 "so"
+               end
+
+  target = "lib/loro.#{target_ext}"
+
+  FileUtils.mkdir_p("lib")
+  FileUtils.cp(source, target)
+
+  puts "Built: #{target}"
+end
+
+desc "Clean build artifacts"
+task :clean do
+  sh "cargo clean"
+  FileUtils.rm_rf("lib/loro.so")
+  FileUtils.rm_rf("lib/loro.bundle")
+end
+
+desc "Run tests"
+task :test => :build do
+  ruby "-Ilib", "-e", <<~RUBY
+    require 'loro'
+
+    puts "Testing Loro::Doc..."
+    doc = Loro::Doc.new
+    puts "  Created doc with peer_id: \#{doc.peer_id}"
+
+    puts "Testing Loro::Text..."
+    text = doc.get_text("test")
+    text.insert(0, "Hello, World!")
+    puts "  Text content: \#{text.to_s}"
+    puts "  Text length: \#{text.length}"
+
+    puts "Testing Loro::Map..."
+    map = doc.get_map("meta")
+    map.insert_string("key", "value")
+    puts "  Map['key']: \#{map['key']}"
+
+    puts "Testing export/import..."
+    snapshot = doc.export_snapshot
+    puts "  Snapshot size: \#{snapshot.bytesize} bytes"
+
+    doc2 = Loro::Doc.new
+    doc2.import(snapshot)
+    text2 = doc2.get_text("test")
+    puts "  Imported text: \#{text2.to_s}"
+
+    puts "\\nAll tests passed!"
+  RUBY
+end
+
+task default: :build
+

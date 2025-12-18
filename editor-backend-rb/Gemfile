@@ -1,0 +1,39 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+ruby ">= 3.2"
+
+# Async HTTP server
+gem "falcon", "~> 0.47"
+gem "async", "~> 2.6"
+gem "async-websocket", "~> 0.26"
+
+# HTTP routing (lightweight Rack-based)
+gem "roda", "~> 3.73"
+
+# Database
+gem "activerecord", "~> 7.1", require: "active_record"
+gem "pg", "~> 1.5"
+
+# Authentication
+gem "jwt", "~> 2.7"
+gem "argon2", "~> 2.3"
+
+# JSON/CBOR encoding
+gem "cbor", "~> 0.5"
+
+# Environment configuration
+gem "dotenv", "~> 2.8"
+
+# CORS middleware
+gem "rack-cors", "~> 2.0"
+
+# Database migrations
+gem "standalone_migrations", "~> 7.1"
+
+group :development do
+  gem "pry", "~> 0.14"
+  gem "rubocop", "~> 1.57"
+  gem "rerun", "~> 0.14"
+end

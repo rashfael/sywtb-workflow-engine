@@ -1,0 +1,9 @@
+# frozen_string_literal: true
+
+require "standalone_migrations"
+StandaloneMigrations::Tasks.load_tasks
+
+# Load environment for rake tasks
+task :environment do
+  require_relative "lib/config/database"
+end

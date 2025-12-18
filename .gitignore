@@ -3,3 +3,10 @@ node_modules
 **/.vitepress/dist
 .turbo
 restate-data
+
+# Ruby
+**/vendor/bundle
+.bundle
+
+# Rust
+**/target

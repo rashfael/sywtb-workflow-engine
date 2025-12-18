@@ -1,5 +1,5 @@
 export default {
 	editorBackend: {
-		baseUrl: 'http://localhost:8787'
+		baseUrl: 'http://localhost:8788'
 	}
 }
