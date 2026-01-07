@@ -1,8 +1,6 @@
-import fs from 'fs/promises'
-import path from 'path'
 import { LoroDoc } from 'loro-crdt'
+import { load, store } from '~/storage'
 
-const STORAGE_BASE_PATH = './.storage/loroDocs'
 const MIN_SAVE_DELAY = 5000 // only save at most once every 5s
 
 const openDocs = new Map<string, StoredLoroDoc>()
@@ -25,10 +23,11 @@ export default class StoredLoroDoc {
 		if (this.#eventuallyLoaded) return this.#eventuallyLoaded
 
 		this.#eventuallyLoaded = (async () => {
-			const data = await fs.readFile(`${STORAGE_BASE_PATH}/${this.path}.loro`).catch(() => null)
+			const data = await load(`${this.path}.loro`).catch(() => null)
 			// not having a file is fine, it just means a fresh doc
 			if (data) this.doc.import(new Uint8Array(data))
 		})()
+		return this.#eventuallyLoaded
 	}
 
 	#dirty = false
@@ -61,9 +60,7 @@ export default class StoredLoroDoc {
 			this.#dirty = false
 			this.#lastSavedAt = Date.now()
 			// TODO compression?
-			const filepath = `${STORAGE_BASE_PATH}/${this.path}.loro`
-			await fs.mkdir(path.dirname(filepath), { recursive: true })
-			await fs.writeFile(filepath, data)
+			await store(`${this.path}.loro`, data)
 		} finally {
 			unlock()
 			this.#savingLock = null
