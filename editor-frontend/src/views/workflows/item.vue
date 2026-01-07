@@ -22,6 +22,8 @@ const editorOptions = {
 </script>
 <template lang="pug">
 .v-workflow(v-if="workflowStore.isReady")
+	.actions
+		bunt-button(loading="auto", @click="workflowStore.deploy") Deploy
 	LoroMonacoEditor(:text="workflowStore.doc.getText('config.ts')" :editorOptions="editorOptions")
 bunt-progress-circular(v-else)
 </template>
@@ -32,4 +34,5 @@ bunt-progress-circular(v-else)
 	flex-direction: column
 	padding: 16px
 	width: 100%
+	gap: 8px
 </style>

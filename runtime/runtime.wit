@@ -1,0 +1,8 @@
+package sywtb-workflow-engine:runtime@0.1.0;
+
+world runtime-guest {
+	record ctx {
+		entry-point: string
+	}
+	export run: func(ctx: ctx, payload: string);
+}

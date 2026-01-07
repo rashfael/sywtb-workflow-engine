@@ -31,6 +31,9 @@ export async function createWorkflowApi (workflowId: string) {
 		async exchangeLoroToken () {
 			const { token } = await api.post(`tokens/loro`).json() as { token: string }
 			return token
+		},
+		async deploy () {
+			return await api.post(`deploy`).json() as { success: boolean }
 		}
 	}
 }

@@ -29,6 +29,9 @@ export function createWorkflowStore (workflowId: string) {
 					url: `${config.editorBackend.baseUrl}/loro/workflows/${workflowId}/workflow`,
 					token: await this.api.exchangeLoroToken()
 				}))
+			},
+			async deploy () {
+				await this.api.deploy()
 			}
 		}
 	})
