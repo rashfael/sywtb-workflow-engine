@@ -114,7 +114,7 @@ Both WebAssembly components and core modules have a file ending of `.wasm`, if w
 
 Since `componentize` + `transpile` is pretty expensive I'll be doing those steps when the workflow is getting deployed and not on every execution. From experience I know that the js glue code and all core modules except the first one are the same for every workflow which means I can compile those once statically and only load the actual guest wasm module dynamically on execution. For users to trigger a deployment I'll add a simple "Deploy" button alongside the code editor:
 
-![Deploy button in the frontend](./assets/deploy-button.png)
+![Deploy button in the frontend](./1-2-deploy.png)
 
 When the user clicks that button, the current code gets compiled and transpiled and the resulting `workflow.core.wasm` gets saved to some storage (for now just the local filesystem, later something like s3). The other core modules and js glue code are saved statically to the editor backend.
 
