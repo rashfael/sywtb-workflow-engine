@@ -23,7 +23,8 @@ export default defineConfig({
 				text: 'Chapter 1',
 				items: [
 					{ text: 'Order of Operations', link: '/chapter-1/0-order-of-operations' },
-					{ text: 'Collaborative Editing', link: '/chapter-1/1-collaborative-editing' }
+					{ text: 'Collaborative Editing', link: '/chapter-1/1-collaborative-editing' },
+					{ text: 'Playing with Sandboxes', link: '/chapter-1/2-playing-with-sandboxes' },
 				]
 			}
 		],
