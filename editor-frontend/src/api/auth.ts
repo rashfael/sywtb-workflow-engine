@@ -47,3 +47,8 @@ export async function login (email: string, password: string) {
 	localStorage.setItem('authToken', token)
 	extendApiWithAuth()
 }
+
+export async function exchangeWorkflowToken (workflowId: string) {
+	const { token } = await api.post(`tokens/workflow/${workflowId}`).json() as { token: string }
+	return token
+}

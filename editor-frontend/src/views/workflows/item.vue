@@ -21,8 +21,9 @@ const editorOptions = {
 }
 </script>
 <template lang="pug">
-.v-workflow
+.v-workflow(v-if="workflowStore.isReady")
 	LoroMonacoEditor(:text="workflowStore.doc.getText('config.ts')" :editorOptions="editorOptions")
+bunt-progress-circular(v-else)
 </template>
 <style lang="sass">
 .v-workflow

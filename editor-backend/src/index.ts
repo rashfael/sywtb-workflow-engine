@@ -8,6 +8,7 @@ import app from './app'
 import { injectWebSocket } from './baseWebSocketApp'
 import authApp from './auth'
 import workflowsApp from './workflows'
+import workflowApp from './workflow'
 import loroApp from './loro/app'
 
 app.use('*', cors())
@@ -15,6 +16,7 @@ app.use(logger())
 
 app.route('/auth', authApp)
 app.route('/workflows', workflowsApp)
+app.route('/workflows/:workflowId', workflowApp)
 app.route('/loro', loroApp)
 
 const port = 8787

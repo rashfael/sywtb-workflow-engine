@@ -1,11 +1,12 @@
 import ky from 'ky'
 import config from 'config'
-import { token } from './auth'
+import { exchangeWorkflowToken } from './auth'
 
-export function createWorkflowsApi () {
+export async function createWorkflowApi (workflowId: string) {
+	const token = await exchangeWorkflowToken(workflowId)
 	// TODO less copypasta?
 	const api = ky.create({
-		prefixUrl: `${config.editorBackend.baseUrl}/workflows`,
+		prefixUrl: `${config.editorBackend.baseUrl}/workflows/${workflowId}`,
 		headers: {
 			'Content-Type': 'application/json',
 			Authorization: `Bearer ${token}`
@@ -27,18 +28,9 @@ export function createWorkflowsApi () {
 
 	return {
 		...api,
-		workflows: {
-			async list () {
-				return await api.get('').json() as Array<{ _id: string, label: string, owner: string }>
-			},
-			async create ({ _id, label }: { _id: string, label: string }) {
-				return await api.post('', {
-					json: {
-						_id,
-						label
-					}
-				}).json() as { _id: string, label: string, owner: string }
-			}
+		async exchangeLoroToken () {
+			const { token } = await api.post(`tokens/loro`).json() as { token: string }
+			return token
 		}
 	}
 }

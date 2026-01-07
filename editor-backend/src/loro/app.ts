@@ -1,4 +1,5 @@
 import { createWebSocketApp } from '~/baseWebSocketApp'
+import { verifyLoroToken, type JWTPayload } from '~/auth'
 
 import StoredLoroDoc from './doc'
 
@@ -7,8 +8,8 @@ export default createWebSocketApp('/:docPath{.+}', async (room) => {
 	return {
 		async onClientConnect (client) {
 			return {
-				onAuth (_payload) {
-					// TODO do a key exchange or something
+				onAuth (payload: JWTPayload) {
+					verifyLoroToken(payload, room.params.docPath)
 				},
 				actions: {
 					async update (update: any) {
