@@ -26,17 +26,6 @@ const server = serve({
 })
 injectWebSocket(server)
 
-// Temporary workflow execution endpoint for testing
-import { runWorkflow } from 'runtime/src/host/index'
-import { load } from '~/storage'
-app.post('/execute/:workflowId', async ({ req, json }) => {
-	const workflowId = req.param('workflowId')
-	const core = await load(`workflows/${workflowId}/workflow.core.wasm`)
-	const payload = await req.json()
-	const result = await runWorkflow(core, payload)
-	return json(result)
-})
-
 console.log(`Editor Backend running on http://localhost:${port}`)
 showRoutes(app, {
 	verbose: true,
