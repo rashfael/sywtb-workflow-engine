@@ -1,10 +1,13 @@
 import * as restate from '@restatedev/restate-sdk'
-import { workflowWorkflow } from './workflow'
+import { workflowWorkflow, workflowWrapperService } from './workflow'
+
+import './public-api'
 
 const port = await restate.serve({
 	services: [
-		workflowWorkflow
+		workflowWorkflow,
+		workflowWrapperService
 	]
 })
 
-console.log(`Execution Backend running on http://localhost:${port}`)
+console.log(`Restate Services running on http://localhost:${port}`)

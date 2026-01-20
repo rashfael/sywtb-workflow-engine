@@ -14,4 +14,14 @@ const workflowWorkflow = restate.workflow({
 	}
 })
 
-export { workflowWorkflow }
+const workflowWrapperService = restate.service({
+	name: 'ExecuteWorkflow',
+	handlers: {
+		execute: async (ctx: restate.Context, { workflowId, payload }) => {
+			const key = `${workflowId}/${ctx.rand.uuidv4()}`
+			await ctx.workflowSendClient<typeof workflowWorkflow>(workflowWorkflow, key).run({ workflowId, payload })
+		},
+	},
+})
+
+export { workflowWorkflow, workflowWrapperService }
