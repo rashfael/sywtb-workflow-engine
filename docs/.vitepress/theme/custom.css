@@ -18,3 +18,10 @@
   --vp-c-brand-3: #9c27b0;
   --vp-c-brand-soft: rgba(186, 104, 200, 0.16);
 }
+
+figcaption {
+  font-size: 0.875em;
+  text-align: center;
+  color: var(--vp-c-text-secondary);
+  margin-top: 0.5em;
+}
