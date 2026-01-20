@@ -1,28 +1,9 @@
-import ky from 'ky'
 import config from 'config'
-import { token } from './auth'
+import { createApi } from './base'
 
 export function createWorkflowsApi () {
-	// TODO less copypasta?
-	const api = ky.create({
-		prefixUrl: `${config.editorBackend.baseUrl}/workflows`,
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${token}`
-		},
-		hooks: {
-			beforeError: [
-				async (error) => {
-					const { response } = error
-					if (response) {
-						const body = await response.json() as any
-						error.message = `${body.message} (${response.status})`
-					}
-
-					return error
-				}
-			]
-		}
+	const api = createApi({
+		prefixUrl: `${config.editorBackend.baseUrl}/workflows`
 	})
 
 	return {
