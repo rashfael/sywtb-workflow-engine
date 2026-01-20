@@ -232,7 +232,7 @@ export function createWebSocketApp (
 									}
 
 									// Verify JWT
-									const payload = await verify(token, JWT_SECRET) as unknown as JWTPayload
+									const payload = await verify(token, JWT_SECRET, { alg: 'HS256' }) as unknown as JWTPayload
 
 									// Let instance do additional authorization
 									if (client.hooks.onAuth) {

@@ -28,7 +28,8 @@ export interface LoroJWTPayload extends BaseJWTPayload {
 export type JWTPayload = GlobalJWTPayload | WorkflowJWTPayload | LoroJWTPayload
 
 export const authMiddleware = jwt({
-	secret: JWT_SECRET
+	secret: JWT_SECRET,
+	alg: 'HS256'
 })
 
 export function verifyWorkflowToken (jwtPayload: JWTPayload, workflowId: string): WorkflowJWTPayload {
